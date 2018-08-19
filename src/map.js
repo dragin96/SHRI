@@ -12,6 +12,9 @@ export function initMap(ymaps, containerId) {
   const objectManager = new ymaps.ObjectManager({
     clusterize: true,
     gridSize: 64,
+    clusterIconPieChartRadius: 25,
+    clusterIconPieChartCoreRadius: 10,
+    clusterIconPieChartStrokeWidth: 3,
     clusterIconLayout: 'default#pieChart',
     clusterDisableClickZoom: false,
     geoObjectOpenBalloonOnClick: false,
@@ -19,31 +22,30 @@ export function initMap(ymaps, containerId) {
     geoObjectBalloonContentLayout: getDetailsContentLayout(ymaps)
   });
 
-  objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
-
   loadList().then(data => {
     objectManager.add(data);
+    myMap.geoObjects.add(objectManager);
   });
 
   // details
   objectManager.objects.events.add('click', event => {
     const objectId = event.get('objectId');
     const obj = objectManager.objects.getById(objectId);
-
-    objectManager.objects.balloon.open(objectId);
-
+    
+    
     if (!obj.properties.details) {
       loadDetails(objectId).then(data => {
-        obj.properties.details = data;
+        objectManager.objects.balloon.open(objectId);
+        objectManager.objects.getById(objectId).properties.details = data;;
         objectManager.objects.balloon.setData(obj);
       });
     }
   });
 
+
   // filters
   const listBoxControl = createFilterControl(ymaps);
   myMap.controls.add(listBoxControl);
-
   var filterMonitor = new ymaps.Monitor(listBoxControl.state);
   filterMonitor.add('filters', filters => {
     objectManager.setFilter(

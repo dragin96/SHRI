@@ -20,7 +20,6 @@ export function createChart(container, data, isActive) {
 
   const borderColor = getColor(isActive);
   const backgroundColor = getColor(isActive, 0.5);
-
   const chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -29,8 +28,8 @@ export function createChart(container, data, isActive) {
         {
           data: data,
           borderWidth: 1,
-            borderColor: borderColor,
-              backgroundColor: backgroundColor
+          borderColor: [borderColor],
+          backgroundColor: [backgroundColor]
         }
       ]
     },
@@ -39,8 +38,8 @@ export function createChart(container, data, isActive) {
             display: false
         },
         scales: {
-            xAxes: [{ ticks: { display: false } }],
-            yAxes: [{ ticks: { beginAtZero: true, max: 0 } }]
+            xAxes: [{ ticks: { display: false, beginAtZero: true } }],
+            yAxes: [{ ticks: { beginAtZero: true} }]
         }
     }
   });
